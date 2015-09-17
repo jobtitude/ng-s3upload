@@ -16,6 +16,16 @@ angular.module('ngS3upload.directives', []).
             "bar-success": $scope.attempt && !$scope.uploading && $scope.success
           };
         };
+
+        $scope.$on("s3upload:reset", function(event){
+          $scope.filename = null;
+          $scope.uploading = false;
+          var prevTrans = $(".progress-bar").css('transition');
+          $scope.transition = "transition: none";
+          $scope.progress = 0;
+          $scope.transition = "";
+        });
+
       }],
       compile: function (element, attr, linker) {
         return {
@@ -55,6 +65,7 @@ angular.module('ngS3upload.directives', []).
               var selectedFile = file[0].files[0];
               var filename = selectedFile.name;
               var ext = filename.split('.').pop();
+              scope.$emit("s3upload:selectedfile", selectedFile);
 
               if(angular.isObject(opts.getManualOptions)) {
                 _upload(opts.getManualOptions);
